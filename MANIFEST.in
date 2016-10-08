@@ -1,0 +1,2 @@
+recursive-include quota_burndown/static *
+recursive-include quota_burndown/templates *
