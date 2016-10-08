@@ -32,10 +32,10 @@ def quota_burndown(sender, quota, **kwargs):
         for date in (first_day + timedelta(n) for n in range(duration.days + 1)):
             date_list.append({
                 'date': date.strftime('%Y-%m-%d'),
-                'quota_used': qs.filter(
+                'available': quota.size - qs.filter(
                     Q(Q(order__status=Order.STATUS_PAID) | Q(order__status=Order.STATUS_PENDING)) &
                     Q(order__datetime__lte=date)
-                ).distinct().count() + baseline,
+                ).distinct().count() - baseline,
             })
         cache.set('quotaburndown_data_{}'.format(quota.name), date_list)
 
