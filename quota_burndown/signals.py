@@ -5,7 +5,7 @@ from django.db.models import Q
 from django.dispatch import receiver
 from django.template.loader import get_template
 
-from pretix.base.models import Order, OrderPosition
+from pretix.base.models import Order, OrderPosition, Quota
 from pretix.control.signals import quota_detail_html
 
 
@@ -41,3 +41,12 @@ def quota_burndown(sender, quota, **kwargs):
 
     template = get_template('quotaburndown/quota_detail.html')
     return template.render(context={'data': json.dumps(date_list)})
+
+
+def clear_cache(sender, **kwargs):
+    cache = sender.get_cache()
+    for quota in Quota.objects.all().values_list('name', flat=True):
+        cache.delete('quotaburndown_data_{}'.format(quota))
+
+order_placed.connect(clear_cache)
+order_paid.connect(clear_cache)
