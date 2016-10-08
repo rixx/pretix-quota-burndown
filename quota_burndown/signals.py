@@ -6,6 +6,7 @@ from django.dispatch import receiver
 from django.template.loader import get_template
 
 from pretix.base.models import Order, OrderPosition, Quota
+from pretix.base.signals import order_paid, order_placed
 from pretix.control.signals import quota_detail_html
 
 
@@ -33,7 +34,7 @@ def quota_burndown(sender, quota, **kwargs):
                 'date': date.strftime('%Y-%m-%d'),
                 'quota_used': qs.filter(
                     Q(Q(order__status=Order.STATUS_PAID) | Q(order__status=Order.STATUS_PENDING)) &
-                    Q(order__datetime__lte=date),
+                    Q(order__datetime__lte=date)
                 ).distinct().count() + baseline,
             })
         cache.set('quotaburndown_data_{}'.format(quota.name), date_list)
