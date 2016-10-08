@@ -33,7 +33,6 @@ def quota_burndown(sender, quota, **kwargs):
                 'date': date.strftime('%Y-%m-%d'),
                 'quota_used': qs.filter(
                     Q(Q(order__status=Order.STATUS_PAID) | Q(order__status=Order.STATUS_PENDING)) &
-                    Q(Q(voucher__isnull=True) | Q(voucher__block_quota=False)) &
                     Q(order__datetime__lte=date),
                 ).distinct().count() + baseline,
             })
