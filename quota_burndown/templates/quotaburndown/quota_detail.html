@@ -1,0 +1,14 @@
+{% load i18n %}
+{% load staticfiles %}
+
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <h3 class="panel-title">{% trans "Quota history" %}</h3>
+        </div>
+        <div class="panel-body">
+            <div id="quota_burndown_chart" class="chart"></div>
+        </div>
+    </div>
+
+    <script type="application/json" id="quota-data">{{ data|safe }}</script>
+    <script type="application/javascript" src="{% static "quotaburndown/quotastatistics.js" %}"></script>
