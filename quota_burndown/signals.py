@@ -18,6 +18,10 @@ def quota_burndown(sender, quota, **kwargs):
         qs = OrderPosition.objects\
             .filter(quota._position_lookup)\
             .order_by('order__datetime')
+
+        if not qs.exists():
+            return ''
+
         first_day = qs.first().order.datetime.date()
         last_day = qs.last().order.datetime.date()
         duration = last_day - first_day
